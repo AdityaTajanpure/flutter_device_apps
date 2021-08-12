@@ -5,6 +5,16 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.menu),
+        onPressed: () {
+          Navigator.pushNamed(context, "/apps");
+        },
+        elevation: 0,
+      ),
+    );
   }
 }
