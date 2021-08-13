@@ -10,43 +10,54 @@ class MyAppsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, watch, _) {
-        final appsInfo = watch(appsProvider);
-        return Scaffold(
-          appBar: AppBar(
-            elevation: 1,
-            backgroundColor: Colors.black.withOpacity(0.7),
-            leading: BackButton(
-              color: Colors.white,
+    return WillPopScope(
+      onWillPop: () => Future(() {
+        Navigator.pushNamed(context, '/');
+        return true;
+      }),
+      child: Consumer(
+        builder: (context, watch, _) {
+          final appsInfo = watch(appsProvider);
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 1,
+              backgroundColor: Colors.black.withOpacity(0.7),
+              leading: BackButton(
+                color: Colors.white,
+              ),
             ),
-          ),
-          body: appsInfo.when(
-              data: (List<Application> apps) {
-                apps.forEach((element) {
-                  ApplicationWithIcon app = element;
-                  appdata[app.appName] = app;
-                });
-                var sortedKeys = appdata.keys.toList()..sort();
-                return GridView.builder(
-                    padding: const EdgeInsets.all(8.0),
-                    itemCount: apps.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0),
-                    itemBuilder: (context, index) {
-                      return GridAppItem(app: appdata[sortedKeys[index]]);
-                    });
-              },
-              loading: () => Center(
-                    child: CircularProgressIndicator(),
-                  ),
-              error: (err, stl) => Center(
-                    child: Text(err),
-                  )),
-        );
-      },
+            body: appsInfo.when(
+                data: (List<Application> apps) {
+                  apps.forEach((element) {
+                    ApplicationWithIcon app = element;
+                    appdata[app.appName.toLowerCase()] = app;
+                  });
+                  var sortedKeys = appdata.keys
+                      .map((e) => e.toString().toLowerCase())
+                      .toList()
+                        ..sort();
+                  return Container(
+                    child: GridView.builder(
+                        padding: const EdgeInsets.all(8.0),
+                        itemCount: apps.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            crossAxisSpacing: 8.0,
+                            mainAxisSpacing: 8.0),
+                        itemBuilder: (context, index) {
+                          return GridAppItem(app: appdata[sortedKeys[index]]);
+                        }),
+                  );
+                },
+                loading: () => Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                error: (err, stl) => Center(
+                      child: Text(err),
+                    )),
+          );
+        },
+      ),
     );
   }
 }
