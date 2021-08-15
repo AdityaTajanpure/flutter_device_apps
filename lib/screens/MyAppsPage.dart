@@ -83,13 +83,18 @@ class GridAppItem extends StatelessWidget {
               width: 40.0,
             ),
           ),
-          Text(
-            app.appName,
-            maxLines: 1,
-            overflow: TextOverflow.fade,
-          ),
+          Text(getName(app.appName)),
         ],
       ),
     );
+  }
+
+  String getName(String app) {
+    //less than 10 asal tr complete name, else first 7 letters and ..
+    if (app.length < 10) {
+      return app;
+    } else {
+      return app.substring(0, 7) + "...";
+    }
   }
 }
