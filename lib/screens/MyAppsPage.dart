@@ -1,6 +1,7 @@
 import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_device_apps/provider/apps_state.dart';
+import 'package:flutter_device_apps/screens/StartApp.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MyAppsPage extends StatelessWidget {
@@ -70,17 +71,30 @@ class GridAppItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StartApp(
+              tag: app.appName,
+              image: app.icon,
+              package: app.packageName,
+            ),
+          ),
+        );
         print("App is starting: ${app.appName} : ${app.packageName}");
-        return DeviceApps.openApp(app.packageName);
+        // return DeviceApps.openAppSettings(app.packageName);
       },
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.memory(
-              app.icon,
-              fit: BoxFit.contain,
-              width: 40.0,
+          Hero(
+            tag: app.appName,
+            child: Container(
+              padding: const EdgeInsets.all(6.0),
+              child: Image.memory(
+                app.icon,
+                fit: BoxFit.contain,
+                width: 50.0,
+              ),
             ),
           ),
           Text(getName(app.appName)),
@@ -90,7 +104,6 @@ class GridAppItem extends StatelessWidget {
   }
 
   String getName(String app) {
-    //less than 10 asal tr complete name, else first 7 letters and ..
     if (app.length < 10) {
       return app;
     } else {
